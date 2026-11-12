@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
 from rag import build_rag_chain
+from routes.tasks import tasks_bp
 
 app = Flask(__name__)
+app.register_blueprint(tasks_bp)
 
 # Создаем RAG-цепочку при старте сервера
 print("Загружаем базу знаний и инициализируем RAG...")
