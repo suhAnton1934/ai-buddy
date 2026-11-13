@@ -1,26 +1,30 @@
-from flask import Blueprint, jsonify
+
+from flask import Blueprint, jsonify, request
+from db import get_connection
 
 tasks_bp = Blueprint("tasks", __name__)
-
-tasks = {
-    1: [
-        {"id": 1, "title": "Настроить Git", "status": "pending"},
-        {"id": 2, "title": "Изучить документацию", "status": "pending"}
-    ],
-    2: [
-        {"id": 3, "title": "Познакомиться с наставником", "status": "pending"}
-    ]
-}
 
 
 @tasks_bp.route("/users/<int:user_id>/tasks", methods=["GET"])
 def get_tasks(user_id):
-    if user_id not in tasks:
-        return jsonify({"error": "Пользователь не найден"}), 404
+    connection = get_connection()
 
-    return jsonify({"tasks": tasks[user_id]})
+    try:
+        rows = connection.execute(
+            "SELECT id, title, status FROM tasks WHERE user_id = ?",
+            (user_id,)
+        ).fetchall()
 
-from flask import request
+        if not rows:
+            return jsonify({"error": "Пользователь не найден или задач нет"}), 404
+
+        return jsonify({
+            "tasks": [dict(row) for row in rows]
+        })
+
+    finally:
+        connection.close()
+
 
 @tasks_bp.route("/tasks/<int:task_id>", methods=["PATCH"])
 def update_task(task_id):
@@ -34,10 +38,29 @@ def update_task(task_id):
     if status not in ("pending", "completed"):
         return jsonify({"error": "Недопустимый статус"}), 400
 
-    for user_id, user_tasks in tasks.items():
-        for task in user_tasks:
-            if task["id"] == task_id:
-                task["status"] = status
-                return jsonify({"task": task})
+    connection = get_connection()
 
-    return jsonify({"error": "Задача не найдена"}), 404
+    try:
+        task = connection.execute(
+            "SELECT id, title, status FROM tasks WHERE id = ?",
+            (task_id,)
+        ).fetchone()
+
+        if task is None:
+            return jsonify({"error": "Задача не найдена"}), 404
+
+        connection.execute(
+            "UPDATE tasks SET status = ? WHERE id = ?",
+            (status, task_id)
+        )
+        connection.commit()
+
+        updated_task = connection.execute(
+            "SELECT id, title, status FROM tasks WHERE id = ?",
+            (task_id,)
+        ).fetchone()
+
+        return jsonify({"task": dict(updated_task)})
+
+    finally:
+        connection.close()
