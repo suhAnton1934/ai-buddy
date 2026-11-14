@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+from contextlib import closing
 
 DB_PATH = Path(__file__).resolve().parent / "data" / "ai_buddy.db"
 
@@ -13,7 +14,7 @@ def get_connection():
 def init_db():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    with get_connection() as connection:
+    with closing(get_connection()) as connection, connection:
         connection.execute("""
             CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY,

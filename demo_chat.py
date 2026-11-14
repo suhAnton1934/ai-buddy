@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from db import get_connection
 from config import DEMO_USER_ID
+from contextlib import closing
 
 demo_chat_bp = Blueprint("demo_chat", __name__)
 
@@ -22,7 +23,7 @@ def demo_chat():
 
     message = message.strip().lower()
 
-    with get_connection() as connection:
+    with closing(get_connection()) as connection:
 
         # Сценарий 1: показать незавершённые задачи
         if "задач" in message or (
