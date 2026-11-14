@@ -1,9 +1,17 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
+from db import init_db
 from rag import build_rag_chain
 from routes.tasks import tasks_bp
 
 app = Flask(__name__)
 app.register_blueprint(tasks_bp)
+
+init_db()
+
+
+@app.get("/")
+def index():
+    return send_from_directory("frontend", "index.html")
 
 # Создаем RAG-цепочку при старте сервера
 print("Загружаем базу знаний и инициализируем RAG...")
