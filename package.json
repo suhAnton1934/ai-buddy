@@ -1,0 +1,30 @@
+{
+  "name": "ai-buddy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+  "test": "vitest run",
+  "test:coverage": "vitest run --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suhAnton1934/ai-buddy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/suhAnton1934/ai-buddy/issues"
+  },
+  "homepage": "https://github.com/suhAnton1934/ai-buddy#readme",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^5.1.0",
+    "jsdom": "^31.0.1",
+    "vitest": "^5.1.0"
+  }
+}
