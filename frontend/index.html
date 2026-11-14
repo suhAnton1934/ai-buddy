@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-buddy</title>
+</head>
+<body>
+    <h1>AI-buddy</h1>
+    <h2>Мои задачи</h2>
+
+    <div id="tasks"></div>
+    <h2>Чат с AI-buddy</h2>
+
+<div id="messages"></div>
+
+<input
+    type="text"
+    id="messageInput"
+    placeholder="Задай вопрос AI-buddy"
+>
+
+<button id="sendButton">Отправить</button>
+
+    <script>
+        async function loadTasks() {
+            const container = document.getElementById("tasks");
+            container.textContent = "Загрузка...";
+
+            try {
+                const response = await fetch("/users/1/tasks");
+
+                if (!response.ok) {
+                    throw new Error("Не удалось получить задачи");
+                }
+
+                const data = await response.json();
+                container.innerHTML = "";
+
+                for (const task of data.tasks) {
+                    const element = document.createElement("div");
+
+                    const title = document.createElement("span");
+                    title.textContent = `${task.title} — ${task.status} `;
+
+                    const button = document.createElement("button");
+
+                    button.textContent =
+                        task.status === "completed" ? "Вернуть" : "Выполнено";
+
+                    button.onclick = async () => {
+                        const newStatus =
+                            task.status === "completed"
+                                ? "pending"
+                                : "completed";
+
+                        try {
+                            const result = await fetch(`/tasks/${task.id}`, {
+                                method: "PATCH",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({ status: newStatus })
+                            });
+
+                            if (!result.ok) {
+                                throw new Error("Не удалось изменить статус");
+                            }
+
+                            await loadTasks();
+
+                        } catch (error) {
+                            alert(error.message);
+                        }
+                    };
+
+                    element.appendChild(title);
+                    element.appendChild(button);
+                    container.appendChild(element);
+                }
+
+            } catch (error) {
+                container.textContent = error.message;
+            }
+        }
+
+        loadTasks();
+        async function sendMessage() {
+    const input = document.getElementById("messageInput");
+    const messages = document.getElementById("messages");
+
+    const message = input.value.trim();
+
+    if (!message) {
+        return;
+    }
+
+    const userMessage = document.createElement("p");
+    userMessage.textContent = `Ты: ${message}`;
+    messages.appendChild(userMessage);
+
+    input.value = "";
+
+    try {
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Ошибка сервера");
+        }
+
+        const aiMessage = document.createElement("p");
+        aiMessage.textContent = `AI-buddy: ${data.answer}`;
+        messages.appendChild(aiMessage);
+
+    } catch (error) {
+        const errorMessage = document.createElement("p");
+        errorMessage.textContent = `Ошибка: ${error.message}`;
+        messages.appendChild(errorMessage);
+    }
+}
+
+document.getElementById("sendButton").addEventListener("click", sendMessage);
+    </script>
+</body>
+</html>
