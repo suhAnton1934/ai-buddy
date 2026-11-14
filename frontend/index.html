@@ -4,131 +4,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-buddy</title>
+    <title>AI-buddy — адаптация стажёра</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <script src="/assets/app.js" defer></script>
 </head>
 <body>
-    <h1>AI-buddy</h1>
-    <h2>Мои задачи</h2>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="logo">✦ AI-buddy</div>
 
-    <div id="tasks"></div>
-    <h2>Чат с AI-buddy</h2>
+            <div class="nav-title">РАБОЧЕЕ ПРОСТРАНСТВО</div>
+            <div class="nav-link active">▦ Моя адаптация</div>
+            <div class="nav-link">☑ Чек-лист</div>
+            <div class="nav-link">✧ AI-помощник</div>
 
-<div id="messages"></div>
+            <div class="sidebar-bottom">
+                <span class="mode">● Демонстрационный режим</span>
+                <div class="profile">
+                    <div class="avatar">С</div>
+                    <div>
+                        <strong>Стажёр</strong>
+                        <small>Тестовый профиль</small>
+                    </div>
+                </div>
+            </div>
+        </aside>
 
-<input
-    type="text"
-    id="messageInput"
-    placeholder="Задай вопрос AI-buddy"
->
+        <main class="main">
+            <header class="header">
+                <div>
+                    <p class="eyebrow">ЛИЧНЫЙ КАБИНЕТ</p>
+                    <h1>Моя адаптация</h1>
+                    <p class="muted">
+                        Отслеживай задачи и задавай вопросы AI-buddy
+                    </p>
+                </div>
+                <span class="header-badge">Онбординг</span>
+            </header>
 
-<button id="sendButton">Отправить</button>
+            <div class="content">
+                <section class="tasks-panel">
+                    <div class="progress-card">
+                        <p class="eyebrow">ТВОЙ ПРОГРЕСС</p>
+                        <div class="progress-top">
+                            <h2>Путь к самостоятельности</h2>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div id="progress-bar"></div>
+                        </div>
+                        <p id="progress-description" class="muted">
+                            Загрузка задач...
+                        </p>
+                    </div>
 
-    <script>
-        async function loadTasks() {
-            const container = document.getElementById("tasks");
-            container.textContent = "Загрузка...";
+                    <div class="section-heading">
+                        <div>
+                            <h2>Мои задачи</h2>
+                            <p class="muted">
+                                Выполняй шаги адаптации
+                            </p>
+                        </div>
+                        <span id="task-count" class="count">0 задач</span>
+                    </div>
 
-            try {
-                const response = await fetch("/users/1/tasks");
+                    <div id="tasks-list" class="tasks-list">
+                        Загрузка...
+                    </div>
+                </section>
 
-                if (!response.ok) {
-                    throw new Error("Не удалось получить задачи");
-                }
+                <section class="chat-panel">
+                    <div class="chat-header">
+                        <div class="bot-avatar">✦</div>
+                        <div>
+                            <h2>AI-buddy</h2>
+                            <p class="muted">Твой помощник по адаптации</p>
+                        </div>
+                    </div>
 
-                const data = await response.json();
-                container.innerHTML = "";
+                    <div id="messages" class="messages">
+                        <div class="message assistant">
+                            Привет! Я AI-buddy 👋
 
-                for (const task of data.tasks) {
-                    const element = document.createElement("div");
+                            Помогу разобраться с задачами адаптации.
+                            Спроси, что тебе нужно сделать сегодня!
+                        </div>
+                    </div>
 
-                    const title = document.createElement("span");
-                    title.textContent = `${task.title} — ${task.status} `;
+                    <div class="suggestions">
+                        <button type="button" class="suggestion"
+                            data-message="Какие у меня задачи?">
+                            Мои задачи
+                        </button>
+                        <button type="button" class="suggestion"
+                            data-message="Как настроить Git?">
+                            Настройка Git
+                        </button>
+                        <button type="button" class="suggestion"
+                            data-message="Отметь настройку Git выполненной">
+                            Выполнить Git
+                        </button>
+                    </div>
 
-                    const button = document.createElement("button");
-
-                    button.textContent =
-                        task.status === "completed" ? "Вернуть" : "Выполнено";
-
-                    button.onclick = async () => {
-                        const newStatus =
-                            task.status === "completed"
-                                ? "pending"
-                                : "completed";
-
-                        try {
-                            const result = await fetch(`/tasks/${task.id}`, {
-                                method: "PATCH",
-                                headers: {
-                                    "Content-Type": "application/json"
-                                },
-                                body: JSON.stringify({ status: newStatus })
-                            });
-
-                            if (!result.ok) {
-                                throw new Error("Не удалось изменить статус");
-                            }
-
-                            await loadTasks();
-
-                        } catch (error) {
-                            alert(error.message);
-                        }
-                    };
-
-                    element.appendChild(title);
-                    element.appendChild(button);
-                    container.appendChild(element);
-                }
-
-            } catch (error) {
-                container.textContent = error.message;
-            }
-        }
-
-        loadTasks();
-        async function sendMessage() {
-    const input = document.getElementById("messageInput");
-    const messages = document.getElementById("messages");
-
-    const message = input.value.trim();
-
-    if (!message) {
-        return;
-    }
-
-    const userMessage = document.createElement("p");
-    userMessage.textContent = `Ты: ${message}`;
-    messages.appendChild(userMessage);
-
-    input.value = "";
-
-    try {
-        const response = await fetch("/chat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ message: message })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || "Ошибка сервера");
-        }
-
-        const aiMessage = document.createElement("p");
-        aiMessage.textContent = `AI-buddy: ${data.answer}`;
-        messages.appendChild(aiMessage);
-
-    } catch (error) {
-        const errorMessage = document.createElement("p");
-        errorMessage.textContent = `Ошибка: ${error.message}`;
-        messages.appendChild(errorMessage);
-    }
-}
-
-document.getElementById("sendButton").addEventListener("click", sendMessage);
-    </script>
+                    <form id="chat-form" class="chat-form">
+                        <input
+                            id="chat-input"
+                            type="text"
+                            placeholder="Спроси AI-buddy..."
+                            autocomplete="off"
+                            required
+                        >
+                        <button id="send-button" type="submit">
+                            Отправить
+                        </button>
+                    </form>
+                </section>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
