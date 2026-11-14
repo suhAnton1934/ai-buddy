@@ -24,10 +24,11 @@ def test_get_tasks(client):
     assert len(response.json["tasks"]) == 2
 
 
-def test_user_not_found(client):
+def test_access_denied_for_other_user(client):
     response = client.get("/users/999/tasks")
 
-    assert response.status_code == 404
+    assert response.status_code == 403
+    assert response.get_json()["error"] == "Доступ запрещён"
 
 
 def test_update_task(client):
@@ -60,3 +61,29 @@ def test_task_not_found(client):
     )
 
     assert response.status_code == 404
+
+def test_cannot_read_another_users_tasks(client):
+    response = client.get("/users/2/tasks")
+
+    assert response.status_code == 403
+    assert response.get_json()["error"] == "Доступ запрещён"
+
+
+def test_cannot_update_another_users_task(client):
+    response = client.patch(
+        "/tasks/3",
+        json={"status": "completed"}
+    )
+
+    assert response.status_code == 403
+
+    # Убедимся, что чужая задача осталась без изменений.
+    from db import get_connection
+
+    with get_connection() as connection:
+        task = connection.execute(
+            "SELECT status FROM tasks WHERE id = ?",
+            (3,)
+        ).fetchone()
+
+    assert task["status"] == "pending"
