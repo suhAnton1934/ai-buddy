@@ -16,6 +16,8 @@ from db import get_connection, init_db
 from demo_chat import demo_chat_bp
 from routes.mentor import mentor_bp
 from routes.tasks import tasks_bp
+from team_memory import (team_memory_bp, init_team_memory_db,
+                         find_approved_answer, chat_answer)
 
 ROOT = Path(__file__).resolve().parent
 MAX_MESSAGE_LENGTH = 2000
@@ -124,6 +126,8 @@ def create_app(ai_mode=None, rag_factory=None):
 
     app = Flask(__name__)
     init_db()
+    init_team_memory_db()
+    app.register_blueprint(team_memory_bp)
     app.register_blueprint(tasks_bp)
     app.register_blueprint(mentor_bp)
 
@@ -143,6 +147,20 @@ def create_app(ai_mode=None, rag_factory=None):
     actual = 'rag' if chain is not None else 'demo'
     if actual == 'demo':
         app.register_blueprint(demo_chat_bp)
+
+        @app.before_request
+        def verified_mentor_answer_demo():
+            # Never replace normal demo commands or error handling.
+            if request.path != '/chat' or request.method != 'POST':
+                return None
+            payload = request.get_json(silent=True)
+            if not isinstance(payload, dict):
+                return None
+            message = payload.get('message')
+            match = find_approved_answer(message)
+            if match is not None:
+                return jsonify(chat_answer(match, 'demo'))
+            return None
     else:
         @app.post('/chat')
         def real_chat():
@@ -159,6 +177,9 @@ def create_app(ai_mode=None, rag_factory=None):
             if not isinstance(context, dict):
                 return jsonify({'error': 'user_context должен быть объектом'}), 400
             try:
+                verified = find_approved_answer(message)
+                if verified is not None:
+                    return jsonify(chat_answer(verified, 'rag'))
                 tasks = _task_rows()
                 prompt = _build_question(message, context, tasks)
                 result = chain.invoke({'query': prompt})

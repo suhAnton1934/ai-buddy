@@ -1,0 +1,18 @@
+/* Restrained Team Memory styling, inherits existing project design tokens. */
+.tm-card { margin-bottom: 18px; }
+.tm-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.tm-header h2 { margin-bottom: 7px; }
+.tm-pill { border-radius: 8px; padding: 7px 11px; background: #f0edff; color: #6a53bf; font-size: 13px; font-weight: 750; }
+.tm-entry-list { display: grid; gap: 10px; }
+.tm-entry { border: 1px solid #e8eaf3; border-radius: 11px; padding: 15px; background: #fcfcff; }
+.tm-entry strong { display: block; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.tm-entry p { font-size: 12px; line-height: 1.7; margin: 8px 0 12px; color: #4d5870; white-space: pre-wrap; overflow-wrap: anywhere; }
+.tm-entry-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 9px; }
+.tm-approved { font-size: 11px; color: #28865f; font-weight: 750; }
+.tm-link { background: transparent; color: #8b5262; border: none; padding: 6px 2px; font-size: 11px; text-decoration: underline; }
+.tm-publish-area { margin-top: 13px; }
+.tm-publish { border: 1px solid #dad3fc; border-radius: 9px; background: #f1edff; color: #674dc0; font-size: 12px; font-weight: 750; padding: 9px 12px; }
+.tm-publish:hover { background: #e9e3ff; }
+.tm-publish:disabled,.tm-link:disabled { opacity: .55; cursor: not-allowed; }
+.tm-empty,.tm-status { color: #8b94a7; font-size: 12px; line-height: 1.6; }
+.tm-status { margin: 12px 0 0; min-height: 1em; }
