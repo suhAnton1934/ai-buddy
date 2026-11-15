@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from db import get_connection
 from config import DEMO_USER_ID
 from contextlib import closing
+from intent_router import detect_intent, execute_corporate_action
 
 demo_chat_bp = Blueprint("demo_chat", __name__)
 
@@ -22,11 +23,15 @@ def demo_chat():
         return jsonify({"error": "Пустое сообщение"}), 400
 
     message = message.strip().lower()
+    intent = detect_intent(message)
+
+    if intent == "ACTION_CORPORATE":
+        return jsonify(execute_corporate_action(message, mode="demo"))
 
     with closing(get_connection()) as connection:
 
         # Сценарий 1: показать незавершённые задачи
-        if "задач" in message or (
+        if intent == "CHECKLIST" or "задач" in message or (
             "что" in message and "делать" in message
         ):
             rows = connection.execute(
@@ -50,6 +55,7 @@ def demo_chat():
                 "answer": answer,
                 "sources": [],
                 "mode": "demo",
+                "intent": "CHECKLIST",
                 "task_updated": False
             })
 
@@ -73,6 +79,7 @@ def demo_chat():
                     "answer": "Задача настройки Git не найдена.",
                     "sources": [],
                     "mode": "demo",
+                    "intent": "ACTION",
                     "task_updated": False
                 })
 
@@ -93,6 +100,7 @@ def demo_chat():
                 "answer": answer,
                 "sources": [],
                 "mode": "demo",
+                "intent": "ACTION",
                 "task_updated": updated
             })
 
@@ -107,6 +115,7 @@ def demo_chat():
                 ),
                 "sources": ["knowledge/ssh_guide.txt"],
                 "mode": "demo",
+                "intent": "RAG",
                 "task_updated": False
             })
 
@@ -118,5 +127,6 @@ def demo_chat():
         ),
         "sources": [],
         "mode": "demo",
+        "intent": "RAG", 
         "task_updated": False
     })

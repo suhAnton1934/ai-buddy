@@ -21,6 +21,7 @@ from mentor_intelligence import mentor_intelligence_bp, init_mentor_intelligence
 from knowledge_sync import register_knowledge_sync
 from team_memory import (team_memory_bp, init_team_memory_db,
                          find_approved_answer, chat_answer)
+from intent_router import detect_intent, execute_corporate_action
 
 ROOT = Path(__file__).resolve().parent
 MAX_MESSAGE_LENGTH = 2000
@@ -199,6 +200,9 @@ def create_app(ai_mode=None, rag_factory=None):
                 verified = find_approved_answer(message)
                 if verified is not None:
                     return jsonify(chat_answer(verified, 'rag'))
+                intent = detect_intent(message)
+                if intent == 'ACTION_CORPORATE':
+                    return jsonify(execute_corporate_action(message, mode='rag'))
                 tasks = _task_rows()
                 prompt = _build_question(message, context, tasks)
                 result = chain.invoke({'query': prompt})
@@ -213,6 +217,7 @@ def create_app(ai_mode=None, rag_factory=None):
                     'mode': 'rag',
                     'task_updated': False,
                     'proposed_action': _propose_completion(message, tasks),
+                    'intent': intent,
                 })
             except Exception:
                 app.logger.exception('RAG-запрос завершился ошибкой')
