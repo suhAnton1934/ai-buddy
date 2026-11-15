@@ -7,6 +7,8 @@
   <title>AI-buddy — пространство адаптации</title>
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="stylesheet" href="/assets/mentor.css">
+  <link rel="stylesheet" href="/assets/productivity.css">
+  <script src="/assets/productivity.js" defer></script>
   <script src="/assets/app.js" defer></script>
   <script src="/assets/mentor.js" defer></script>
 </head>
@@ -64,6 +66,15 @@
         <div class="metric"><span class="metric-icon amber" aria-hidden="true">◷</span><div><small>Осталось</small><strong id="metric-pending">0</strong></div></div>
       </section>
 
+      <section class="my-day" id="my-day" aria-label="Мой день">
+        <div class="my-day-head">
+          <div><p class="eyebrow">СЕГОДНЯ И БЛИЖАЙШИЕ ЗАДАЧИ</p><h2>Мой день</h2></div>
+          <span class="day-date" id="my-day-date">Сегодня</span>
+        </div>
+        <p class="my-day-summary" id="my-day-summary">Загружаем план...</p>
+        <div class="day-list" id="my-day-list" aria-live="polite"></div>
+      </section>
+
       <div class="content" id="content-layout">
         <section class="tasks-panel" id="tasks-section" aria-label="Чек-лист и прогресс">
           <div class="surface progress-card">
@@ -114,6 +125,11 @@
           <div class="mentor-stat"><strong id="mentor-completed">0</strong><span>Выполнено</span></div>
           <div class="mentor-stat"><strong id="mentor-overdue">0</strong><span>Просрочено</span></div>
         </div>
+        <section class="mentor-attention" id="mentor-attention" aria-label="Требуют внимания">
+          <div class="mentor-attention-header"><h2>Требуют внимания</h2><span class="mentor-attention-count" id="mentor-attention-count">0</span></div>
+          <p class="mentor-attention-summary" id="mentor-attention-summary">Загружаем данные...</p>
+          <div class="attention-list" id="mentor-attention-list" aria-live="polite"></div>
+        </section>
         <div class="mentor-grid">
           <div>
             <div class="mentor-card">

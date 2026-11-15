@@ -189,6 +189,22 @@ function createTaskCard(task) {
         details.appendChild(deadline);
     }
 
+    if (task.status !== "completed") {
+        const helpButton = document.createElement("button");
+        helpButton.type = "button";
+        helpButton.className = "help-with-task";
+        helpButton.textContent = "✦ Помоги с задачей";
+        helpButton.setAttribute("aria-label", `Помоги с задачей: ${task.title}`);
+        helpButton.addEventListener("click", () => {
+            // Только готовим вопрос; отправку в AI инициирует стажёр.
+            document.querySelector('.nav-link[data-view="chat"]')?.click();
+            if (chatInput) {
+                chatInput.value = `Помоги мне выполнить задачу «${task.title}». Объясни шаги на основе доступных инструкций.`;
+                chatInput.focus();
+            }
+        });
+        details.appendChild(helpButton);
+    }
     info.append(check, details);
 
     const button = document.createElement("button");
@@ -246,6 +262,7 @@ async function loadTasks() {
         allTasks = data.tasks;
         renderTasks();
         updateProgress(allTasks);
+        document.dispatchEvent(new CustomEvent("ai-buddy:tasks-loaded", { detail: { tasks: allTasks } }));
     } catch (error) {
         tasksList.textContent = error.message;
     }

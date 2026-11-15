@@ -1,0 +1,36 @@
+/* Независимый слой для трёх небольших функций; не меняет существующие классы. */
+.my-day { margin: 0 0 22px; padding: 22px 24px; background: #fff; border: 1px solid #e8eaf4; border-radius: 17px; box-shadow: 0 5px 20px #1d26420a; }
+.my-day-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.my-day-head h2 { font-size: 20px; margin: 5px 0; }
+.day-date { font-size: 12px; font-weight: 700; color: #7862cd; background: #f3efff; padding: 9px 13px; border-radius: 20px; }
+.my-day-summary { font-size: 12px; color: #768197; margin: 0 0 14px; }
+.day-list { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+.day-item { background: #fafaff; border: 1px solid #e7e9f4; border-radius: 13px; padding: 14px; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
+.day-item-content { min-width: 0; display: grid; gap: 8px; }
+.day-item strong { font-size: 13px; font-weight: 750; line-height: 1.45; overflow-wrap: anywhere; }
+.day-deadline { font-size: 11px; font-weight: 750; }
+.day-deadline.neutral { color: #777f94; }
+.day-deadline.warning { color: #a67419; }
+.day-deadline.danger { color: #bd574b; }
+.day-task-button { width: fit-content; padding: 0; background: transparent; color: #6c50d7; border: 0; font: inherit; font-size: 12px; font-weight: 750; cursor: pointer; }
+.day-task-button:hover { text-decoration: underline; }
+.productivity-empty { color: #828da3; font-size: 12px; padding: 10px 2px; }
+.help-with-task { margin-top: 10px; display: inline-flex; align-items: center; padding: 7px 10px; background: #f2efff; color: #6c50cf; border: 1px solid #e8e1ff; border-radius: 9px; font: inherit; font-size: 11px; font-weight: 750; cursor: pointer; }
+.help-with-task:hover { background: #e9e2ff; }
+.mentor-attention { margin: 0 0 18px; padding: 20px 23px; background: #fff; border: 1px solid #e7e9f3; border-radius: 16px; box-shadow: 0 5px 18px #1d26420a; }
+.mentor-attention-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.mentor-attention-header h2 { margin: 0; font-size: 19px; }
+.mentor-attention-count { background: #fff3e8; color: #aa6d28; border-radius: 20px; min-width: 30px; padding: 7px 10px; font-size: 12px; text-align: center; font-weight: 800; }
+.mentor-attention-summary { font-size: 12px; color: #7d879a; margin: 8px 0 14px; }
+.attention-list { display: grid; gap: 9px; }
+.attention-item { display: grid; grid-template-columns: 155px minmax(0,1fr); gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid #edeef4; background: #fbfbfe; border-radius: 10px; }
+.attention-item p { font-size: 12px; margin: 0; color: #4d5871; line-height: 1.5; overflow-wrap: anywhere; }
+.attention-tag { font-size: 10px; font-weight: 760; }
+.attention-tag.danger { color: #b34e46; }
+.attention-tag.warning { color: #a47222; }
+.attention-tag.question { color: #6656c6; }
+.attention-more { font-size: 11px; color: #8b92a1; }
+/* Раздел показывается исключительно в «Обзоре» и не появляется в кабинете наставника. */
+.layout:not(.view-home) .my-day { display: none !important; }
+@media (max-width: 1080px) { .day-list { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .my-day { padding: 16px; } .mentor-attention { padding: 16px; } .attention-item { grid-template-columns: 1fr; gap: 3px; } }

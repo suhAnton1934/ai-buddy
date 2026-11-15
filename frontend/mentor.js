@@ -148,6 +148,7 @@
         try {
             const data = await api(`/mentor/tasks?user_id=${USER_ID}`);
             renderMentorTasks(data.tasks);
+            document.dispatchEvent(new CustomEvent("ai-buddy:mentor-tasks-loaded", { detail: { tasks: data.tasks } }));
         } catch (error) {
             mentorTaskList.textContent = error.message;
         }
@@ -158,6 +159,7 @@
             const data = await api(`/mentor/questions?user_id=${USER_ID}`);
             renderMentorQuestions(data.questions);
             renderStudentQuestions(data.questions);
+            document.dispatchEvent(new CustomEvent("ai-buddy:mentor-questions-loaded", { detail: { questions: data.questions } }));
         } catch (error) {
             mentorQuestionList.textContent = error.message;
             studentQuestionList.textContent = error.message;
