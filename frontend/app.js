@@ -149,6 +149,7 @@ async function sendMessage(text) {
 
     chatInput.value = "";
     sendButton.disabled = true;
+    sendButton.textContent = "Думает..."; // Показываем, что идет загрузка
 
     try {
         const response = await fetch("/chat", {
@@ -157,7 +158,13 @@ async function sendMessage(text) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                message: message
+                message: message,
+                // ДОБАВЛЯЕМ КОНТЕКСТ СТАЖЁРА (согласно твоему ТЗ)
+                user_context: {
+                    role: "Стажёр Backend", // В реальности это должно приходить из профиля
+                    team: "Платформа",
+                    stage: "Первая неделя"
+                }
             })
         });
 
@@ -167,17 +174,41 @@ async function sendMessage(text) {
             throw new Error(data.error || "Ошибка сервера");
         }
 
+        // Добавляем текстовый ответ AI
         addMessage(data.answer, "assistant");
 
+        // --- НОВОЕ: ВЫВОДИМ ИСТОЧНИКИ ---
+        if (data.sources && data.sources.length > 0) {
+            const sourcesContainer = document.createElement("div");
+            sourcesContainer.className = "sources-container";
+            
+            // Берем уникальные источники (чтобы не дублировались файлы)
+            const uniqueFiles = [...new Set(data.sources.map(s => s.file))];
+            
+            sourcesContainer.innerHTML = `<div class="sources-title">Источники информации:</div>`;
+            
+            uniqueFiles.forEach(file => {
+                const sourceBadge = document.createElement("span");
+                sourceBadge.className = "source-badge";
+                sourceBadge.textContent = file;
+                sourcesContainer.appendChild(sourceBadge);
+            });
+            
+            // Добавляем контейнер с источниками в чат после сообщения AI
+            messages.appendChild(sourcesContainer);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Если AI обновил задачу (в будущем, когда Ксюша сделает Tool Calling)
         if (data.task_updated) {
             await loadTasks();
         }
 
     } catch (error) {
         addMessage(`Ошибка: ${error.message}`, "assistant");
-
     } finally {
         sendButton.disabled = false;
+        sendButton.textContent = "Отправить";
         chatInput.focus();
     }
 }

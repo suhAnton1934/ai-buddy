@@ -1,0 +1,9 @@
+Вопрос: Какой стиль написания кода принят в компании (Python)?
+Ответ: Мы используем PEP 8. Обязательно используйте линтеры (flake8, black) перед коммитом. Функции должны быть с docstring. Максимальная длина строки — 100 символов.
+
+Вопрос: Как писать коммиты?
+Ответ: Мы используем Conventional Commits. Формат: <type>: <description>. 
+Примеры: 
+- feat: add auth endpoint
+- fix: resolve null pointer in user model
+- docs: update readme instructions
