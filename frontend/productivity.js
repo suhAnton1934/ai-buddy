@@ -13,6 +13,7 @@
     const attentionCount = byId("mentor-attention-count");
     let mentorTasks = null;
     let mentorQuestions = null;
+    let closedTicketIds = new Set();
 
     function todayISO() {
         const date = new Date();
@@ -125,7 +126,7 @@
             const days = daysLeft(t.due_date);
             return days !== null && days >= 0 && days <= 2;
         });
-        const unanswered = mentorQuestions.filter(q => q && q.status !== "answered" && !q.reply);
+        const unanswered = mentorQuestions.filter(q => q && q.status !== "answered" && !q.reply && !closedTicketIds.has(q.id));
         const total = overdue.length + soon.length + unanswered.length;
         if (attentionCount) attentionCount.textContent = String(total);
         if (attentionSummary) attentionSummary.textContent = total
@@ -164,6 +165,10 @@
     document.addEventListener("ai-buddy:mentor-questions-loaded", event => {
         if (!Array.isArray(event.detail?.questions)) return;
         mentorQuestions = event.detail.questions;
+        renderAttention();
+    });
+    document.addEventListener("ai-buddy:tickets-updated", event => {
+        closedTicketIds = new Set(event.detail?.closedIds || []);
         renderAttention();
     });
 })();

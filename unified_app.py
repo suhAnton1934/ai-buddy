@@ -15,6 +15,7 @@ from config import DEMO_USER_ID
 from db import get_connection, init_db
 from demo_chat import demo_chat_bp
 from routes.mentor import mentor_bp
+from tickets import tickets_bp, init_ticket_db
 from routes.tasks import tasks_bp
 from mentor_intelligence import mentor_intelligence_bp, init_mentor_intelligence_db
 from knowledge_sync import register_knowledge_sync
@@ -128,12 +129,14 @@ def create_app(ai_mode=None, rag_factory=None):
 
     app = Flask(__name__)
     init_db()
+    init_ticket_db()
     init_team_memory_db()
     init_mentor_intelligence_db()
     app.register_blueprint(mentor_intelligence_bp)
     app.register_blueprint(team_memory_bp)
     app.register_blueprint(tasks_bp)
     app.register_blueprint(mentor_bp)
+    app.register_blueprint(tickets_bp)
 
     chain = None
     reason = None

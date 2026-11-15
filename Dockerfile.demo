@@ -8,6 +8,7 @@ RUN pip install --no-cache-dir -r requirements-demo.txt
 
 COPY db.py config.py demo_chat.py dev_app.py ./
 COPY team_memory.py ./
+COPY tickets.py ./
 COPY mentor_intelligence.py knowledge_sync.py ./
 COPY routes/ ./routes/
 COPY frontend/ ./frontend/

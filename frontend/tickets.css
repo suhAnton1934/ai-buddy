@@ -1,0 +1,22 @@
+/* Mentor ticket management: opt-in UI layered on existing question cards. */
+.ticket-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:12px 0 16px; }
+.ticket-filters { display:flex; flex-wrap:wrap; gap:6px; }
+.ticket-filter { border:1px solid #e1def5; background:#fff; border-radius:9px; padding:8px 10px; font:inherit; font-size:11px; font-weight:680; color:#635e7f; cursor:pointer; }
+.ticket-filter:hover { background:#f5f2ff; }
+.ticket-filter.is-active { color:#5c46cc; background:#eeebff; border-color:#c9bfff; }
+.ticket-search { flex:1; min-width:170px; max-width:300px; border:1px solid #e1e6f0; border-radius:9px; padding:9px 12px; color:#2b3349; background:#fafbff; font:inherit; font-size:12px; }
+.ticket-toolbar-note { width:100%; font-size:11px; color:#8790a3; }
+.ticket-hidden { display:none !important; }
+.ticket-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:13px; padding-top:10px; border-top:1px solid #ecedf4; }
+.ticket-action { border:1px solid #d9d5fa; color:#6450c1; background:#fff; font:inherit; font-weight:680; font-size:11px; border-radius:9px; padding:8px 11px; cursor:pointer; }
+.ticket-action:hover { background:#f5f2ff; }
+.ticket-action:disabled { opacity:0.55; cursor:wait; }
+.ticket-ticketstate { color:#858daa; font-size:10px; font-weight:700; }
+.ticket-closed-marker { color:#587d68; background:#eaf8ef; border-radius:8px; padding:5px 8px; font-size:10px; font-weight:700; }
+.ticket-collapsed .mentor-reply, .ticket-collapsed .ti-analysis,
+.ticket-collapsed .ti-analyze-button { display:none !important; }
+.ticket-collapsed.question-thread .thread-reply { display:none !important; }
+.ticket-pager { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:12px 1px; }
+.ticket-pager p { margin:0; color:#8790a3; font-size:11px; }
+.ticket-empty-match { color:#8790a3; font-size:12px; padding:14px; background:#fafaff; border:1px dashed #e0e2ee; border-radius:10px; margin:12px 0; }
+@media(max-width:600px){ .ticket-search { max-width:none; flex-basis:100%; } .ticket-filter { font-size:10px; padding:7px 8px; } }
