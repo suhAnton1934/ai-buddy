@@ -1,0 +1,8 @@
+# Не заменяет compose.yaml. Использовать как дополнительный override.
+services:
+  ai-buddy:
+    build:
+      context: .
+      dockerfile: Dockerfile.unified-demo
+    environment:
+      AI_MODE: demo

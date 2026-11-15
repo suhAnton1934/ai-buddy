@@ -175,7 +175,14 @@ test("Отправляет сообщение в чат", async () => {
         "/chat",
         expect.objectContaining({
             method: "POST",
-            body: JSON.stringify({ message: "Привет" })
+            body: JSON.stringify({
+                message: "Привет",
+                user_context: {
+                    role: "Не указана",
+                    team: "Не указана",
+                    stage: "Первая неделя"
+                }
+            })
         })
     );
 });

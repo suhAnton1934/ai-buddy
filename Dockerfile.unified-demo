@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements-demo.txt ./
+RUN pip install --no-cache-dir -r requirements-demo.txt
+
+COPY db.py config.py demo_chat.py unified_app.py ./
+COPY routes/ ./routes/
+COPY frontend/ ./frontend/
+
+ENV AI_MODE=demo
+EXPOSE 5001
+CMD ["python", "unified_app.py"]

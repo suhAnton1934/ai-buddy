@@ -273,6 +273,45 @@ function addMessage(text, role, sources = []) {
     messages.scrollTop = messages.scrollHeight;
 }
 
+function showProposedAction(action) {
+    // Сервер предлагает действие; пользователь всегда подтверждает его кнопкой.
+    if (!action || action.type !== "complete_task" ||
+        !Number.isSafeInteger(action.task_id) || action.task_id <= 0 ||
+        typeof action.task_title !== "string") return;
+    const bubble = messages?.lastElementChild;
+    if (!bubble || !bubble.classList.contains("assistant")) return;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "task-button chat-confirm-action";
+    button.textContent = `✓ Подтвердить: ${action.task_title}`;
+    button.addEventListener("click", async () => {
+        button.disabled = true;
+        try {
+            const response = await fetch(`/tasks/${action.task_id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: "completed" })
+            });
+            if (!response.ok) throw new Error("Не удалось завершить задачу");
+            button.textContent = "✓ Выполнено";
+            await loadTasks();
+            showToast("Задача обновлена после подтверждения");
+        } catch (error) {
+            button.disabled = false;
+            showToast(error.message);
+        }
+    });
+    bubble.appendChild(button);
+}
+function showActualAiMode(mode) {
+    // Внешний вид должен честно сообщать, когда подключён реальный RAG.
+    if (mode !== "rag") return;
+    for (const selector of [".environment", ".topbar-status"]) {
+        const badge = document.querySelector(selector);
+        if (badge) badge.textContent = "● AI подключён";
+    }
+}
+
 async function sendMessage(text) {
     const message = String(text || "").trim();
     if (!message || !sendButton || sendButton.disabled) return;
@@ -285,11 +324,20 @@ async function sendMessage(text) {
         const response = await fetch("/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message })
+            body: JSON.stringify({
+                message,
+                user_context: {
+                    role: profile.role,
+                    team: profile.team,
+                    stage: profile.stage
+                }
+            })
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "Ошибка сервера");
         addMessage(data.answer || "Ответ получен без текста", "assistant", data.sources);
+        showActualAiMode(data.mode);
+        showProposedAction(data.proposed_action);
         // Обновляем задачи после любого ответа: совместимо и с demo_chat,
         // и с AI-реализацией, если она не возвращает task_updated.
         await loadTasks();
