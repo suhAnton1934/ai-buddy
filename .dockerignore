@@ -1,11 +1,6 @@
-.git
-.venv
-__pycache__
-.pytest_cache
-node_modules
-coverage
+.venv/
+__pycache__/
 .env
-data/*.db
 *.pyc
-# Never bake synchronized private docs into Docker images.
-knowledge/synced/
+.git/
+faiss_index/

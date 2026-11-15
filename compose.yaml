@@ -1,16 +1,15 @@
-
 services:
   ai-buddy:
     build:
       context: .
-      dockerfile: Dockerfile.demo
-
+      dockerfile: Dockerfile
     ports:
       - "5001:5001"
-
     volumes:
       - ai_buddy_data:/app/data
-
+      - ./knowledge:/app/knowledge
+    env_file:
+      - .env
     restart: unless-stopped
 
 volumes:
