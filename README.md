@@ -7,7 +7,7 @@
 
 ## Быстрый запуск без AI-ключей (рекомендуемый для проверки жюри)
 
-Нужен установленный Docker Desktop.
+Для запуска нужен Docker с Docker Compose: Docker Engine на Linux или Docker Desktop на Windows/macOS.
 
 ```bash
 docker compose up --build
@@ -15,6 +15,10 @@ docker compose up --build
 
 Откройте **http://localhost:5001**. База SQLite хранится в Docker volume
 `ai_buddy_data` и сохраняет состояние между перезапусками.
+
+Запуск и основные пользовательские сценарии проверены на Fedora Linux и Windows.
+Результаты ручного тестирования находятся в файле
+[`Отчёт_QA_AI-buddy.md`](Отчёт_QA_AI-buddy.md).
 
 В этом режиме `/chat` — **сценарная демонстрация**, а не вызов LLM.
 Работают задачи, профиль, кабинет наставника, дедлайны и обращения.
