@@ -1,126 +1,111 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-buddy — адаптация стажёра</title>
-    <link rel="stylesheet" href="/assets/style.css">
-    <script src="/assets/app.js" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17213a">
+  <title>AI-buddy — пространство адаптации</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/app.js" defer></script>
 </head>
 <body>
-    <div class="layout">
-        <aside class="sidebar">
-            <div class="logo">✦ AI-buddy</div>
+  <div class="layout view-home" id="app-layout">
+    <aside class="sidebar">
+      <div class="brand" aria-label="AI-buddy">
+        <div class="brand-mark" aria-hidden="true">✳</div>
+        <div><strong>AI-buddy</strong><span>пространство стажёра</span></div>
+      </div>
 
-            <div class="nav-title">РАБОЧЕЕ ПРОСТРАНСТВО</div>
-            <div class="nav-link active">▦ Моя адаптация</div>
-            <div class="nav-link">☑ Чек-лист</div>
-            <div class="nav-link">✧ AI-помощник</div>
+      <p class="nav-caption">РАБОЧЕЕ ПРОСТРАНСТВО</p>
+      <nav class="navigation" aria-label="Навигация">
+        <button class="nav-link active" data-view="home" type="button" aria-current="page"><span class="nav-icon" aria-hidden="true">▦</span>Обзор</button>
+        <button class="nav-link" data-view="tasks" type="button"><span class="nav-icon" aria-hidden="true">☑</span>Чек-лист</button>
+        <button class="nav-link" data-view="chat" type="button"><span class="nav-icon" aria-hidden="true">✧</span>AI-помощник</button>
+        <button class="nav-link" data-view="profile" type="button"><span class="nav-icon" aria-hidden="true">◯</span>Мой профиль</button>
+      </nav>
 
-            <div class="sidebar-bottom">
-                <span class="mode">● Демонстрационный режим</span>
-                <div class="profile">
-                    <div class="avatar">С</div>
-                    <div>
-                        <strong>Стажёр</strong>
-                        <small>Тестовый профиль</small>
-                    </div>
-                </div>
+      <div class="sidebar-footer">
+        <div class="sidebar-note"><span class="tiny-label">НАПОМИНАНИЕ</span><p>Один завершённый шаг каждый день — уже прогресс.</p></div>
+        <div class="environment"><span class="pulse-dot"></span> Демо-режим · без LLM</div>
+        <button class="account-button" data-view="profile" type="button" aria-label="Открыть мой профиль">
+          <span class="avatar" id="sidebar-avatar">С</span>
+          <span class="account-name"><strong id="sidebar-name">Стажёр</strong><small id="sidebar-role">Тестовый профиль</small></span>
+          <span class="account-chevron" aria-hidden="true">›</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumbs">Рабочее пространство <span>/</span> <strong id="breadcrumb-current">Обзор</strong></div>
+        <div class="topbar-actions">
+          <span class="topbar-status"><span class="pulse-dot"></span> Демо-режим</span>
+          <button class="top-profile" data-view="profile" type="button"><span class="top-avatar" id="top-avatar">С</span><span>Профиль</span></button>
+        </div>
+      </header>
+
+      <div class="page-intro">
+        <div><p class="eyebrow">ONBOARDING / WORKSPACE</p><h1 id="page-title">Твой старт в команде</h1><p class="page-description" id="page-description">Здесь всё, что нужно для спокойной и понятной адаптации.</p></div>
+        <span class="page-chip">● Первая версия</span>
+      </div>
+
+      <section class="welcome" id="welcome-banner" aria-label="Приветствие">
+        <div class="welcome-copy"><span class="welcome-overline">ДОБРО ПОЖАЛОВАТЬ В КОМАНДУ</span><h2>Привет, <span id="greeting-name">стажёр</span>!</h2><p>Двигайся по чек-листу в своём темпе. Если что-то непонятно — AI-buddy поможет разобраться.</p><button id="open-chat-button" type="button" class="button button-light">Задать вопрос <span aria-hidden="true">↗</span></button></div>
+        <div class="welcome-art" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="star-symbol">✳</span></div>
+      </section>
+
+      <section class="metrics" id="summary-metrics" aria-label="Статистика адаптации">
+        <div class="metric"><span class="metric-icon violet" aria-hidden="true">◉</span><div><small>Всего задач</small><strong id="metric-total">0</strong></div></div>
+        <div class="metric"><span class="metric-icon green" aria-hidden="true">✓</span><div><small>Выполнено</small><strong id="metric-completed">0</strong></div></div>
+        <div class="metric"><span class="metric-icon amber" aria-hidden="true">◷</span><div><small>Осталось</small><strong id="metric-pending">0</strong></div></div>
+      </section>
+
+      <div class="content" id="content-layout">
+        <section class="tasks-panel" id="tasks-section" aria-label="Чек-лист и прогресс">
+          <div class="surface progress-card">
+            <div class="section-topline"><span class="eyebrow">ПРОГРЕСС АДАПТАЦИИ</span><span class="soft-badge">Твой путь</span></div>
+            <div class="progress-row"><div><h2>Шаг за шагом</h2><p class="muted">Каждая выполненная задача приближает к цели</p></div><strong id="progress-percent" class="progress-number">0%</strong></div>
+            <div class="progress-track" role="progressbar" aria-label="Прогресс адаптации" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-bar"></div></div>
+            <p class="progress-caption" id="progress-description">Загрузка задач...</p>
+          </div>
+
+          <div class="focus-card" id="focus-card">
+            <span class="focus-icon" aria-hidden="true">↗</span>
+            <div class="focus-body"><span class="eyebrow">СЛЕДУЮЩИЙ ШАГ</span><strong id="focus-title">Загружаем задачи...</strong><p id="focus-description">Подскажем, с чего лучше начать.</p></div>
+            <button id="focus-action" type="button" class="focus-button">Открыть задачи</button>
+          </div>
+
+          <div class="section-heading"><div><p class="eyebrow">ТВОЙ ПЛАН</p><h2>Чек-лист адаптации</h2><p class="muted">Отмечай прогресс и находи нужные задачи</p></div><span class="count" id="task-count">0 задач</span></div>
+          <div class="task-tools">
+            <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="task-search" type="search" placeholder="Найти задачу..." aria-label="Поиск задачи"></label>
+            <div class="filter-row" role="group" aria-label="Фильтр задач">
+              <button type="button" class="filter-btn selected" data-task-filter="all" aria-pressed="true">Все</button>
+              <button type="button" class="filter-btn" data-task-filter="pending" aria-pressed="false">В работе</button>
+              <button type="button" class="filter-btn" data-task-filter="completed" aria-pressed="false">Готово</button>
             </div>
-        </aside>
+          </div>
+          <div class="tasks-list" id="tasks-list" aria-live="polite">Загрузка...</div>
+          <p class="below-list">Данные задач сохраняются в SQLite на сервере.</p>
+        </section>
 
-        <main class="main">
-            <header class="header">
-                <div>
-                    <p class="eyebrow">ЛИЧНЫЙ КАБИНЕТ</p>
-                    <h1>Моя адаптация</h1>
-                    <p class="muted">
-                        Отслеживай задачи и задавай вопросы AI-buddy
-                    </p>
-                </div>
-                <span class="header-badge">Онбординг</span>
-            </header>
+        <section class="chat-panel surface" id="chat-section" aria-label="Чат с AI-buddy">
+          <div class="chat-header"><span class="bot-avatar" aria-hidden="true">✳</span><div class="chat-identity"><h2>AI-buddy</h2><p>Помощник по адаптации</p></div><span class="chat-mode"><span class="pulse-dot"></span> Демо</span></div>
+          <div class="messages" id="messages" aria-live="polite"><div class="message assistant">Привет! Я AI-buddy. Помогу с задачами, Git и документацией. С чего начнём?</div></div>
+          <div class="chat-bottom"><p class="suggestions-title">Попробуй спросить</p><div class="suggestions"><button type="button" class="suggestion" data-message="Какие у меня задачи?">Мои задачи</button><button type="button" class="suggestion" data-message="Как настроить Git?">Настройка Git</button><button type="button" class="suggestion" data-message="Отметь настройку Git выполненной">Выполнить Git</button></div><form id="chat-form" class="chat-form"><input id="chat-input" type="text" placeholder="Напиши вопрос..." autocomplete="off" aria-label="Вопрос помощнику" maxlength="2000" required><button type="submit" id="send-button" aria-label="Отправить сообщение">➤</button></form><p class="chat-disclaimer">Демонстрационный сценарий без подключения LLM</p></div>
+        </section>
+      </div>
 
-            <div class="content">
-                <section class="tasks-panel">
-                    <div class="progress-card">
-                        <p class="eyebrow">ТВОЙ ПРОГРЕСС</p>
-                        <div class="progress-top">
-                            <h2>Путь к самостоятельности</h2>
-                            <span id="progress-percent">0%</span>
-                        </div>
-                        <div class="progress-track">
-                            <div id="progress-bar"></div>
-                        </div>
-                        <p id="progress-description" class="muted">
-                            Загрузка задач...
-                        </p>
-                    </div>
+      <section class="profile-view surface" id="profile-view" hidden aria-label="Мой профиль">
+        <div class="profile-hero"><span class="profile-big-avatar" id="profile-big-avatar">С</span><div><p class="eyebrow">ПРОФИЛЬ СТАЖЁРА</p><h2 id="profile-display-name">Стажёр</h2><p>Личное пространство для адаптации</p></div><span class="demo-pill">Демо-профиль</span></div>
+        <div class="profile-grid">
+          <div class="profile-card"><div class="card-head"><h3>О себе</h3><p>Эти данные можно изменить — они сохранятся в этом браузере.</p></div><form id="profile-form" class="profile-form"><label>Имя<input id="profile-name" type="text" maxlength="60" placeholder="Как тебя зовут?" required></label><label>Направление / роль<input id="profile-role" type="text" maxlength="80" placeholder="Например, Backend-разработчик"></label><label>Команда<input id="profile-team" type="text" maxlength="80" placeholder="Команда или проект"></label><label>Этап адаптации<select id="profile-stage"><option>Первая неделя</option><option>Вторая неделя</option><option>Первый месяц</option><option>В процессе адаптации</option></select></label><label>Мои заметки<textarea id="profile-notes" rows="5" maxlength="2000" placeholder="Что важно запомнить? Какие вопросы задать наставнику?"></textarea></label><button type="submit" class="button button-primary">Сохранить профиль</button></form></div>
+          <div class="profile-side"><div class="profile-side-card"><span class="eyebrow">АДАПТАЦИЯ</span><strong id="profile-progress-value">0%</strong><p>Твой текущий прогресс по чек-листу.</p><button type="button" class="button button-outline" id="profile-to-tasks">Перейти к задачам →</button></div><div class="profile-side-card tip-card"><span class="eyebrow">КАК ЭТО РАБОТАЕТ</span><h3>Профиль для демоверсии</h3><p>Имя, команда и заметки сохраняются только в браузере через localStorage. Это не корпоративная учётная запись и не авторизация.</p></div></div>
+        </div>
+      </section>
 
-                    <div class="section-heading">
-                        <div>
-                            <h2>Мои задачи</h2>
-                            <p class="muted">
-                                Выполняй шаги адаптации
-                            </p>
-                        </div>
-                        <span id="task-count" class="count">0 задач</span>
-                    </div>
-
-                    <div id="tasks-list" class="tasks-list">
-                        Загрузка...
-                    </div>
-                </section>
-
-                <section class="chat-panel">
-                    <div class="chat-header">
-                        <div class="bot-avatar">✦</div>
-                        <div>
-                            <h2>AI-buddy</h2>
-                            <p class="muted">Твой помощник по адаптации</p>
-                        </div>
-                    </div>
-
-                    <div id="messages" class="messages">
-                        <div class="message assistant">
-                            Привет! Я AI-buddy 👋
-
-                            Помогу разобраться с задачами адаптации.
-                            Спроси, что тебе нужно сделать сегодня!
-                        </div>
-                    </div>
-
-                    <div class="suggestions">
-                        <button type="button" class="suggestion"
-                            data-message="Какие у меня задачи?">
-                            Мои задачи
-                        </button>
-                        <button type="button" class="suggestion"
-                            data-message="Как настроить Git?">
-                            Настройка Git
-                        </button>
-                        <button type="button" class="suggestion"
-                            data-message="Отметь настройку Git выполненной">
-                            Выполнить Git
-                        </button>
-                    </div>
-
-                    <form id="chat-form" class="chat-form">
-                        <input
-                            id="chat-input"
-                            type="text"
-                            placeholder="Спроси AI-buddy..."
-                            autocomplete="off"
-                            required
-                        >
-                        <button id="send-button" type="submit">
-                            Отправить
-                        </button>
-                    </form>
-                </section>
-            </div>
-        </main>
-    </div>
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+      <footer class="footer">AI-buddy · MVP для адаптации стажёров <span>Демо-данные · без доступа к корпоративным сервисам</span></footer>
+    </main>
+  </div>
 </body>
 </html>
