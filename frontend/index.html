@@ -6,7 +6,9 @@
   <meta name="theme-color" content="#17213a">
   <title>AI-buddy — пространство адаптации</title>
   <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="/assets/mentor.css">
   <script src="/assets/app.js" defer></script>
+  <script src="/assets/mentor.js" defer></script>
 </head>
 <body>
   <div class="layout view-home" id="app-layout">
@@ -22,6 +24,8 @@
         <button class="nav-link" data-view="tasks" type="button"><span class="nav-icon" aria-hidden="true">☑</span>Чек-лист</button>
         <button class="nav-link" data-view="chat" type="button"><span class="nav-icon" aria-hidden="true">✧</span>AI-помощник</button>
         <button class="nav-link" data-view="profile" type="button"><span class="nav-icon" aria-hidden="true">◯</span>Мой профиль</button>
+        <button class="nav-link" data-mentor-view="questions" type="button"><span class="nav-icon" aria-hidden="true">✉</span>Вопросы наставнику</button>
+        <button class="nav-link" data-mentor-view="mentor" type="button"><span class="nav-icon" aria-hidden="true">♙</span>Кабинет наставника <span class="mentor-nav-label">DEMO</span></button>
       </nav>
 
       <div class="sidebar-footer">
@@ -91,7 +95,7 @@
         <section class="chat-panel surface" id="chat-section" aria-label="Чат с AI-buddy">
           <div class="chat-header"><span class="bot-avatar" aria-hidden="true">✳</span><div class="chat-identity"><h2>AI-buddy</h2><p>Помощник по адаптации</p></div><span class="chat-mode"><span class="pulse-dot"></span> Демо</span></div>
           <div class="messages" id="messages" aria-live="polite"><div class="message assistant">Привет! Я AI-buddy. Помогу с задачами, Git и документацией. С чего начнём?</div></div>
-          <div class="chat-bottom"><p class="suggestions-title">Попробуй спросить</p><div class="suggestions"><button type="button" class="suggestion" data-message="Какие у меня задачи?">Мои задачи</button><button type="button" class="suggestion" data-message="Как настроить Git?">Настройка Git</button><button type="button" class="suggestion" data-message="Отметь настройку Git выполненной">Выполнить Git</button></div><form id="chat-form" class="chat-form"><input id="chat-input" type="text" placeholder="Напиши вопрос..." autocomplete="off" aria-label="Вопрос помощнику" maxlength="2000" required><button type="submit" id="send-button" aria-label="Отправить сообщение">➤</button></form><p class="chat-disclaimer">Демонстрационный сценарий без подключения LLM</p></div>
+          <div class="chat-bottom"><p class="suggestions-title">Попробуй спросить</p><div class="suggestions"><button type="button" class="suggestion" data-message="Какие у меня задачи?">Мои задачи</button><button type="button" class="suggestion" data-message="Как настроить Git?">Настройка Git</button><button type="button" class="suggestion" data-message="Отметь настройку Git выполненной">Выполнить Git</button></div><button id="escalate-question" type="button" class="ask-mentor-shortcut">Не нашёл ответ? Передать вопрос наставнику →</button><form id="chat-form" class="chat-form"><input id="chat-input" type="text" placeholder="Напиши вопрос..." autocomplete="off" aria-label="Вопрос помощнику" maxlength="2000" required><button type="submit" id="send-button" aria-label="Отправить сообщение">➤</button></form><p class="chat-disclaimer">Демонстрационный сценарий без подключения LLM</p></div>
         </section>
       </div>
 
@@ -100,6 +104,59 @@
         <div class="profile-grid">
           <div class="profile-card"><div class="card-head"><h3>О себе</h3><p>Эти данные можно изменить — они сохранятся в этом браузере.</p></div><form id="profile-form" class="profile-form"><label>Имя<input id="profile-name" type="text" maxlength="60" placeholder="Как тебя зовут?" required></label><label>Направление / роль<input id="profile-role" type="text" maxlength="80" placeholder="Например, Backend-разработчик"></label><label>Команда<input id="profile-team" type="text" maxlength="80" placeholder="Команда или проект"></label><label>Этап адаптации<select id="profile-stage"><option>Первая неделя</option><option>Вторая неделя</option><option>Первый месяц</option><option>В процессе адаптации</option></select></label><label>Мои заметки<textarea id="profile-notes" rows="5" maxlength="2000" placeholder="Что важно запомнить? Какие вопросы задать наставнику?"></textarea></label><button type="submit" class="button button-primary">Сохранить профиль</button></form></div>
           <div class="profile-side"><div class="profile-side-card"><span class="eyebrow">АДАПТАЦИЯ</span><strong id="profile-progress-value">0%</strong><p>Твой текущий прогресс по чек-листу.</p><button type="button" class="button button-outline" id="profile-to-tasks">Перейти к задачам →</button></div><div class="profile-side-card tip-card"><span class="eyebrow">КАК ЭТО РАБОТАЕТ</span><h3>Профиль для демоверсии</h3><p>Имя, команда и заметки сохраняются только в браузере через localStorage. Это не корпоративная учётная запись и не авторизация.</p></div></div>
+        </div>
+      </section>
+
+      <!-- Кабинет наставника. Роли в MVP демонстрационные, без авторизации. -->
+      <section class="mentor-view" id="mentor-view" hidden aria-label="Кабинет наставника">
+        <div class="mentor-stat-grid" aria-label="Обзор задач стажёра">
+          <div class="mentor-stat"><strong id="mentor-total">0</strong><span>Назначено задач</span></div>
+          <div class="mentor-stat"><strong id="mentor-completed">0</strong><span>Выполнено</span></div>
+          <div class="mentor-stat"><strong id="mentor-overdue">0</strong><span>Просрочено</span></div>
+        </div>
+        <div class="mentor-grid">
+          <div>
+            <div class="mentor-card">
+              <h2>Назначить задачу</h2>
+              <p class="mentor-lead">Задача появится в чек-листе тестового стажёра №1. Можно задать срок выполнения.</p>
+              <form id="mentor-task-form" class="mentor-form">
+                <label>Название задачи <input id="mentor-task-title" type="text" minlength="1" maxlength="120" placeholder="Например, изучить Git Flow" required></label>
+                <label>Описание <textarea id="mentor-task-description" maxlength="1000" placeholder="Что именно нужно сделать?"></textarea></label>
+                <label>Дедлайн <input id="mentor-task-due" type="date" aria-label="Дедлайн задачи"></label>
+                <button type="submit" class="button button-primary">Назначить задачу</button>
+              </form>
+            </div>
+          </div>
+          <div>
+            <div class="mentor-card">
+              <div class="mentor-section-top"><h2>Задачи стажёра</h2><button class="button button-outline" type="button" id="mentor-refresh">Обновить</button></div>
+              <div class="mentor-stack" id="mentor-task-list" aria-live="polite">Загрузка...</div>
+            </div>
+            <div class="mentor-card">
+              <h2>Вопросы стажёра</h2>
+              <p class="mentor-lead">Ответы сохраняются в SQLite и отображаются в кабинете стажёра.</p>
+              <div class="mentor-stack" id="mentor-question-list" aria-live="polite">Загрузка...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Переписка стажёра с наставником: обращения без WebSocket. -->
+      <section class="questions-view" id="questions-view" hidden aria-label="Вопросы наставнику">
+        <div class="mentor-grid">
+          <div class="mentor-card">
+            <h2>Спросить наставника</h2>
+            <p class="mentor-lead">Если AI-buddy не нашёл информацию, отправь вопрос человеку. Ответ появится в истории обращений.</p>
+            <form id="student-question-form" class="mentor-form">
+              <label>Твой вопрос <textarea id="student-question-text" required maxlength="2000" placeholder="С чем нужна помощь?"></textarea></label>
+              <button type="submit" class="button button-primary">Отправить наставнику</button>
+            </form>
+          </div>
+          <div class="mentor-card">
+            <div class="mentor-section-top"><h2>Мои обращения</h2><button class="button button-outline" id="questions-refresh" type="button">Проверить ответы</button></div>
+            <p class="mentor-lead">Демонстрационная переписка: обновление ответов по кнопке.</p>
+            <div class="mentor-stack" id="student-question-list" aria-live="polite">Загрузка...</div>
+          </div>
         </div>
       </section>
 

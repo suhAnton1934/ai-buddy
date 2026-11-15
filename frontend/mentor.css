@@ -1,0 +1,51 @@
+/* Дополнение к текущему стилю AI-buddy: страницы наставника и обращений. */
+.layout.view-mentor .content,
+.layout.view-mentor .welcome,
+.layout.view-mentor .metrics,
+.layout.view-questions .content,
+.layout.view-questions .welcome,
+.layout.view-questions .metrics { display: none; }
+
+.mentor-view, .questions-view { max-width: 1100px; }
+.mentor-grid { display: grid; grid-template-columns: minmax(280px,.9fr) minmax(320px,1.1fr); gap: 18px; align-items: start; }
+.mentor-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 23px; box-shadow: var(--shadow); margin-bottom: 18px; }
+.mentor-card h2 { margin: 0 0 8px; }
+.mentor-lead { color: var(--muted); font-size: 12px; line-height: 1.6; margin: 0 0 20px; }
+.mentor-form { display: grid; gap: 14px; }
+.mentor-form label { display: grid; gap: 7px; font-size: 12px; color: #48536d; font-weight: 700; }
+.mentor-form input, .mentor-form textarea { width: 100%; color: var(--ink); background: #fbfcff; border: 1px solid #e3e7f1; border-radius: 10px; padding: 12px; font-size: 13px; }
+.mentor-form textarea { min-height: 100px; resize: vertical; }
+.mentor-form .button { justify-self: start; }
+.mentor-section-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+.mentor-section-top h2 { margin: 0; }
+.mentor-stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 18px; }
+.mentor-stat { border: 1px solid #e8eaf3; background: #fafaff; border-radius: 12px; padding: 13px; }
+.mentor-stat strong { display: block; font-size: 23px; }
+.mentor-stat span { color: var(--muted); font-size: 11px; }
+.mentor-stack { display: grid; gap: 10px; }
+.mentor-item { border: 1px solid #e7eaf3; background: white; border-radius: 12px; padding: 15px; }
+.mentor-item strong { display: block; font-size: 13px; line-height: 1.5; }
+.mentor-item p { font-size: 12px; color: #7f8a9e; line-height: 1.6; margin: 7px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.mentor-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; align-items: center; }
+.mentor-tag { display: inline-block; border: 1px solid #e9e5fd; background: #f5f2ff; color: #6653c9; border-radius: 8px; padding: 5px 8px; font-size: 10px; font-weight: 750; }
+.mentor-tag.done { border-color: #cfeedd; background: #eaf9f1; color: #258963; }
+.mentor-tag.overdue { background: #fff1ef; border-color: #f7d8d2; color: #b95847; }
+.mentor-tag.soon { background: #fff7e8; border-color: #f7e6c8; color: #a77924; }
+.mentor-empty { font-size: 12px; color: var(--muted); border: 1px dashed #d9deea; padding: 18px; border-radius: 12px; text-align: center; }
+.mentor-reply { display: grid; gap: 8px; margin-top: 11px; }
+.mentor-reply textarea { width: 100%; min-height: 77px; padding: 11px; border: 1px solid #e0e5ef; border-radius: 10px; resize: vertical; font: inherit; }
+.mentor-reply .button { justify-self: end; }
+.question-thread { display: grid; gap: 11px; }
+.question-thread .thread-my { width: fit-content; max-width: 93%; margin-left: auto; background: #f0edff; color: #4e4778; padding: 13px 15px; border-radius: 14px 14px 4px 14px; font-size: 12px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.question-thread .thread-reply { width: fit-content; max-width: 93%; background: #f1f3f8; border-radius: 14px 14px 14px 4px; padding: 13px 15px; line-height: 1.6; white-space: pre-wrap; font-size: 12px; overflow-wrap: anywhere; }
+.question-thread .thread-caption { font-size: 10px; font-weight: 750; color: #8c95a8; }
+.mentor-subtitle { font-size: 11px; color: #8892a7; margin-bottom: 13px; }
+.task-deadline { margin-top: 5px; font-size: 11px; font-weight: 680; color: #7560c9; }
+.task-deadline.is-overdue { color: #bc5b49; }
+.task-deadline.is-soon { color: #a7771b; }
+.task-description { margin-top: 6px; font-size: 11px; line-height: 1.5; color: #8a93a5; }
+.ask-mentor-shortcut { background: transparent; border: 0; color: #6450bd; font-weight: 740; font-size: 11px; padding: 0 0 12px; text-align: left; }
+.ask-mentor-shortcut:hover { text-decoration: underline; }
+.mentor-nav-label { margin-left: auto; font-size: 9px; color: #c2baff; border: 1px solid #596283; border-radius: 5px; padding: 3px 5px; }
+@media (max-width:1000px) { .mentor-grid { grid-template-columns: 1fr; } }
+@media (max-width:540px) { .mentor-card { padding: 17px; } .mentor-stat-grid { gap: 6px; } .mentor-stat { padding: 10px; } .mentor-stat span { font-size: 9px; } .mentor-section-top { align-items: flex-start; flex-direction: column; } }

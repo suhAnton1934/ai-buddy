@@ -25,6 +25,26 @@ def init_db():
             )
         """)
 
+        # Обновляем существующую БД без удаления ранее сохранённых задач.
+        existing_columns = {row["name"] for row in connection.execute("PRAGMA table_info(tasks)")}
+        if "due_date" not in existing_columns:
+            connection.execute("ALTER TABLE tasks ADD COLUMN due_date TEXT")
+        if "description" not in existing_columns:
+            connection.execute("ALTER TABLE tasks ADD COLUMN description TEXT NOT NULL DEFAULT ''")
+
+        connection.execute("""
+            CREATE TABLE IF NOT EXISTS mentor_questions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                text TEXT NOT NULL,
+                reply TEXT,
+                status TEXT NOT NULL DEFAULT 'open'
+                    CHECK(status IN ('open', 'answered')),
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                answered_at TEXT
+            )
+        """)
+
         connection.executemany("""
             INSERT OR IGNORE INTO tasks (id, user_id, title, status)
             VALUES (?, ?, ?, ?)

@@ -16,7 +16,7 @@ def get_tasks(user_id):
 
     try:
         rows = connection.execute(
-            "SELECT id, title, status FROM tasks WHERE user_id = ?",
+            "SELECT id, title, status, description, due_date FROM tasks WHERE user_id = ?",
             (DEMO_USER_ID,)
         ).fetchall()
 
@@ -70,7 +70,7 @@ def update_task(task_id):
 
         updated_task = connection.execute(
             """
-            SELECT id, title, status
+            SELECT id, title, status, description, due_date
             FROM tasks
             WHERE id = ? AND user_id = ?
             """,

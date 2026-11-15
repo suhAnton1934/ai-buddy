@@ -137,9 +137,12 @@ function updateProgress(tasks) {
     const bar = document.querySelector(".progress-track[role='progressbar']");
     if (bar) bar.setAttribute("aria-valuenow", String(percent));
 
-    const nextTask = tasks.find(task => task.status !== "completed");
+    const nextTask = tasks.filter(task => task.status !== "completed")
+        .sort((a, b) => (a.due_date || "9999-12-31").localeCompare(b.due_date || "9999-12-31"))[0];
     setText("focus-title", nextTask ? nextTask.title : "Все задачи выполнены");
-    setText("focus-description", nextTask ? "Твой ближайший шаг в адаптации" : "Отличный результат — чек-лист завершён");
+    setText("focus-description", nextTask
+        ? (nextTask.due_date ? `Дедлайн: ${nextTask.due_date}` : "Твой ближайший шаг в адаптации")
+        : "Отличный результат — чек-лист завершён");
     const focusAction = element("focus-action");
     if (focusAction) focusAction.disabled = !nextTask;
 }
@@ -164,6 +167,28 @@ function createTaskCard(task) {
     status.className = "task-status";
     status.textContent = task.status === "completed" ? "Выполнено" : "Ожидает выполнения";
     details.append(title, status);
+    if (task.description) {
+        const desc = document.createElement("div");
+        desc.className = "task-description";
+        desc.textContent = task.description;
+        details.appendChild(desc);
+    }
+    if (task.due_date) {
+        const deadline = document.createElement("div");
+        deadline.className = "task-deadline";
+        const [year, month, day] = task.due_date.split("-");
+        const today = new Date();
+        const pad = number => String(number).padStart(2, "0");
+        const todayDate = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+        const overdue = task.status !== "completed" && task.due_date < todayDate;
+        const soon = task.status !== "completed" && task.due_date === todayDate;
+        if (overdue) deadline.classList.add("is-overdue");
+        if (soon) deadline.classList.add("is-soon");
+        deadline.textContent = overdue ? `Просрочено · ${day}.${month}.${year}`
+            : soon ? "Дедлайн сегодня" : `Дедлайн · ${day}.${month}.${year}`;
+        details.appendChild(deadline);
+    }
+
     info.append(check, details);
 
     const button = document.createElement("button");
@@ -346,3 +371,6 @@ if (profileForm) profileForm.addEventListener("submit", event => {
 
 refreshProfile();
 loadTasks();
+document.addEventListener("ai-buddy:tasks-changed", () => {
+    loadTasks();
+});
