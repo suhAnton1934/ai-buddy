@@ -7,3 +7,5 @@ coverage
 .env
 data/*.db
 *.pyc
+# Never bake synchronized private docs into Docker images.
+knowledge/synced/

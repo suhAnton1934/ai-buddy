@@ -9,3 +9,6 @@ node_modules/
 coverage/
 
 .DS_Store
+
+# Documents fetched from an external system may be confidential.
+knowledge/synced/
