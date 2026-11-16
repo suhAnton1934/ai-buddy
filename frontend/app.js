@@ -439,3 +439,4 @@ loadTasks();
 document.addEventListener("ai-buddy:tasks-changed", () => {
     loadTasks();
 });
+

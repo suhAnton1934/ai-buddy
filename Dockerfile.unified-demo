@@ -13,6 +13,7 @@ COPY routes/ ./routes/
 COPY frontend/ ./frontend/
 COPY mock_corporate_docs/ ./mock_corporate_docs/
 COPY knowledge/ ./knowledge/
+COPY intent_router.py ./
 ENV DOC_SYNC_AUTO=1
 
 ENV AI_MODE=demo

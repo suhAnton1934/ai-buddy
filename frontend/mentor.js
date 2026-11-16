@@ -81,9 +81,40 @@
             const due = dueLabel(task.due_date, task.status);
             if (due) meta.appendChild(node("span", `mentor-tag ${due.type}`, due.text));
             item.appendChild(meta);
+                    // --- Кнопка удаления задачи ---
+            const deleteBtn = node("button", "mentor-delete-btn", "Удалить");
+            deleteBtn.type = "button";
+            deleteBtn.style.marginTop = "10px";
+            deleteBtn.style.background = "#fff1ef";
+            deleteBtn.style.color = "#b95847";
+            deleteBtn.style.border = "1px solid #f7d8d2";
+            deleteBtn.style.padding = "5px 10px";
+            deleteBtn.style.borderRadius = "8px";
+            deleteBtn.style.cursor = "pointer";
+            deleteBtn.style.fontSize = "11px";
+            
+            deleteBtn.addEventListener("click", async () => {
+                if (!confirm(`Удалить задачу «${task.title}»?`)) return;
+                
+                deleteBtn.disabled = true;
+                try {
+                    await api(`/mentor/tasks/${task.id}`, { method: "DELETE" });
+                    notify("Задача удалена");
+                    await loadMentorTasks();
+                    // Сообщаем главному интерфейсу, что задачи изменились
+                    document.dispatchEvent(new Event("ai-buddy:tasks-changed"));
+                } catch (error) {
+                    notify(error.message);
+                    deleteBtn.disabled = false;
+                }
+            });
+            
+            item.appendChild(deleteBtn);
+            // ------------------------------
             mentorTaskList.appendChild(item);
         }
     }
+
 
     function renderStudentQuestions(questions) {
         studentQuestionList.replaceChildren();

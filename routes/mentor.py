@@ -80,6 +80,25 @@ def create_mentor_task():
         ).fetchone()
     return jsonify({"task": dict(row)}), 201
 
+@mentor_bp.delete("/mentor/tasks/<int:task_id>")
+def delete_mentor_task(task_id):
+    # Удаляем задачу только у демо-пользователя
+    with closing(get_connection()) as connection, connection:
+        # Проверяем, существует ли задача и принадлежит ли она стажёру
+        task = connection.execute(
+            "SELECT id FROM tasks WHERE id = ? AND user_id = ?",
+            (task_id, DEMO_USER_ID)
+        ).fetchone()
+        
+        if task is None:
+            return jsonify({"error": "Задача не найдена"}), 404
+            
+        connection.execute(
+            "DELETE FROM tasks WHERE id = ? AND user_id = ?",
+            (task_id, DEMO_USER_ID)
+        )
+        
+    return jsonify({"ok": True, "deleted_id": task_id})
 
 @mentor_bp.get("/mentor/questions")
 def list_questions():
