@@ -117,6 +117,10 @@
   }
 
   function renderAnalysis(card, question) {
+    // Проверяем, включен ли RAG. Если нет — кнопку не показываем.
+    if (window.AI_MODE_ACTUAL !== 'rag') {
+        return; 
+    }
     const previous = card.querySelector('.ti-analyze-button');
     if (previous) previous.remove();
     const button = element('button', 'ti-analyze-button', '✦ Разобрать ответ с AI');

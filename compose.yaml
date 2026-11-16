@@ -16,3 +16,6 @@ services:
 
 volumes:
   ai_buddy_data:
+
+
+  

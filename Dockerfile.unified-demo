@@ -2,20 +2,32 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements-demo.txt ./
-RUN pip install --no-cache-dir -r requirements-demo.txt
+COPY requirements.txt ./
 
-COPY db.py config.py demo_chat.py unified_app.py ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY db.py config.py demo_chat.py unified_app.py rag.py ./
+
 COPY team_memory.py ./
+
 COPY tickets.py ./
+
 COPY mentor_intelligence.py knowledge_sync.py ./
+
 COPY routes/ ./routes/
+
 COPY frontend/ ./frontend/
+
 COPY mock_corporate_docs/ ./mock_corporate_docs/
+
 COPY knowledge/ ./knowledge/
+
 COPY intent_router.py ./
+
 ENV DOC_SYNC_AUTO=1
 
-ENV AI_MODE=demo
+ENV AI_MODE=rag
+
 EXPOSE 5001
+
 CMD ["python", "unified_app.py"]
