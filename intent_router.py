@@ -65,15 +65,20 @@ def execute_corporate_action(message: str, mode: str = "demo") -> dict:
         with closing(get_connection()) as conn, conn:
             cur = conn.execute(
                 """
-                INSERT INTO mentor_questions (user_id, question, status)
+                INSERT INTO mentor_questions (user_id, text, status)
                 VALUES (?, ?, 'open')
                 """,
                 (DEMO_USER_ID, f"[{title}] {msg}"),
             )
             ticket_id = cur.lastrowid
     except Exception:
-        pass
+        return {
+            "answer": "Не удалось сохранить демонстрационную заявку. Попробуй ещё раз.",
+            "sources": [], "mode": mode, "intent": "ACTION",
+            "task_updated": False, "proposed_action": None,
+        }
 
+    answer += " (демонстрационная заявка; внешние корпоративные сервисы не вызываются)"
     return {
         "answer": answer,
         "sources": [],

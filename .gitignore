@@ -12,3 +12,4 @@ coverage/
 
 # Documents fetched from an external system may be confidential.
 knowledge/synced/
+faiss_index/

@@ -6,7 +6,7 @@ WORKDIR /app
 COPY requirements-demo.txt .
 RUN pip install --no-cache-dir -r requirements-demo.txt
 
-COPY db.py config.py demo_chat.py dev_app.py ./
+COPY db.py config.py demo_chat.py dev_app.py unified_app.py intent_router.py ./
 COPY team_memory.py ./
 COPY tickets.py ./
 COPY mentor_intelligence.py knowledge_sync.py ./
@@ -15,7 +15,8 @@ COPY frontend/ ./frontend/
 COPY mock_corporate_docs/ ./mock_corporate_docs/
 COPY knowledge/ ./knowledge/
 ENV DOC_SYNC_AUTO=1
+ENV AI_MODE=demo
 
 EXPOSE 5001
 
-CMD ["python", "dev_app.py"]
+CMD ["python", "unified_app.py"]

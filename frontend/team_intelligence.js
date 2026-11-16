@@ -175,7 +175,14 @@
       } catch (error) { notice(result, error.message); }
       finally { button.disabled = false; ask.disabled = false; }
     }
-    button.addEventListener('click', () => analyze());
+    button.addEventListener('click', () => {
+      card.classList.remove('ticket-collapsed');
+      const details = card.querySelector('.ticket-actions .ticket-action');
+      if (details && details.textContent === 'Показать детали') {
+        details.textContent = 'Свернуть детали';
+      }
+      analyze();
+    });
     form.addEventListener('submit', event => {
       event.preventDefault();
       if (input.value.trim()) analyze(input.value.trim());

@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt ./
+RUN python -m pip install --no-cache-dir -r requirements.txt
+COPY db.py config.py demo_chat.py unified_app.py rag.py intent_router.py ./
+COPY team_memory.py tickets.py mentor_intelligence.py knowledge_sync.py ./
+COPY routes/ ./routes/
+COPY frontend/ ./frontend/
+COPY mock_corporate_docs/ ./mock_corporate_docs/
+COPY knowledge/ ./knowledge/
+ENV AI_MODE=rag
+ENV DOC_SYNC_AUTO=1
+EXPOSE 5001
+CMD ["python", "unified_app.py"]

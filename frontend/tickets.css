@@ -13,8 +13,7 @@
 .ticket-action:disabled { opacity:0.55; cursor:wait; }
 .ticket-ticketstate { color:#858daa; font-size:10px; font-weight:700; }
 .ticket-closed-marker { color:#587d68; background:#eaf8ef; border-radius:8px; padding:5px 8px; font-size:10px; font-weight:700; }
-.ticket-collapsed .mentor-reply, .ticket-collapsed .ti-analysis,
-.ticket-collapsed .ti-analyze-button { display:none !important; }
+.ticket-collapsed .mentor-reply, .ticket-collapsed .ti-analysis { display:none !important; }
 .ticket-collapsed.question-thread .thread-reply { display:none !important; }
 .ticket-pager { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:12px 1px; }
 .ticket-pager p { margin:0; color:#8790a3; font-size:11px; }
