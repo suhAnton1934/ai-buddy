@@ -5,7 +5,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import YandexGPTEmbeddings
 from langchain_community.chat_models import ChatYandexGPT
 from langchain_community.vectorstores import FAISS
-from langchain_classic.chains import RetrievalQA
+from langchain.chains import RetrievalQA
 from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
 

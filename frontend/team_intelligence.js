@@ -117,10 +117,6 @@
   }
 
   function renderAnalysis(card, question) {
-    // Проверяем, включен ли RAG. Если нет — кнопку не показываем.
-    if (window.AI_MODE_ACTUAL !== 'rag') {
-        return; 
-    }
     const previous = card.querySelector('.ti-analyze-button');
     if (previous) previous.remove();
     const button = element('button', 'ti-analyze-button', '✦ Разобрать ответ с AI');
@@ -191,9 +187,13 @@
     if (!Array.isArray(questions)) return;
     const cards = [...studentList.querySelectorAll(':scope > .mentor-item')];
     questions.forEach((q, i) => {
-      if (q?.status === 'answered' && q.reply && cards[i]) {
-        renderAnalysis(cards[i], q);
-      }
+    const card = cards[i];
+
+    if (!card || !String(q?.reply ?? '').trim()) {
+      return;
+    }
+
+    renderAnalysis(card, q);
     });
     loadProposals();
   });
